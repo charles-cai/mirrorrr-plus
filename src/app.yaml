@@ -1,5 +1,5 @@
-application: goto101010
-version: secureable
+application: mirrorrr-plus
+version: v2
 runtime: python
 api_version: 1
 
@@ -28,11 +28,20 @@ handlers:
   script: mirror.py
   secure: optional
 
+- url: /setup 
+  script: mirror.py
+  secure: optional
+  
 - url: /cleanup
-  #login: admin
+  login: admin
   script: mirror.py
   secure: optional
 
+- url: /deletesession
+  login: admin
+  script: mirror.py
+  secure: optional
+  
 - url: /kaboom
   #login: admin
   script: mirror.py
@@ -41,3 +50,10 @@ handlers:
 - url: /.*
   script: mirror.py
   secure: optional
+ 
+error_handlers:
+- file: default_error.html
+
+- error_code: over_quota
+  file: default_error.html
+ 

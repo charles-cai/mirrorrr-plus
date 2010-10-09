@@ -1,0 +1,34 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>mirror - ɹoɹɹıɯ - plus</title>
+  <link rel="stylesheet" href="static/base.2.css" type="text/css" charset="utf-8"/>
+  <link rel="icon" href="/favicon.ico" type="image/vnd.microsoft.icon" />
+  
+</head>
+<body  >
+
+<div id="wrapper">
+<div id="container">
+
+{% include 'header.html'%}
+
+<div id="form_wrapper">
+  <form action="" method="post" accept-charset="utf-8">
+  <div id="input_wrapper">
+    <br/><span id="http_prefix">Chinese Words encoding :</span> <input {{cookies.ChineseWordsencoding}} type="checkbox" name="ChineseWordsencoding" />
+    <br/><span id="http_prefix">Use Cache :</span> <input {{cookies.useCache}} type="checkbox" name="useCache" />
+    <br/><span id="http_prefix">Encoding WhiteList :(twitter.com:utf-8)</span><br/> <textarea  type="Text" rows="5" cols="65" name="EncodingWhiteList" >{{cookies.EncodingWhiteList}}</textarea>
+  </div>
+  <br/>
+  <div id="input_wrapper">
+    <span id="http_prefix"><input id="google_button" class="go_button" type="submit"  value="Save"/>{{result}}
+  </div>
+  
+  </form>
+
+{% include 'footer.html'%}
+
+</body>
+</html>

@@ -20,7 +20,8 @@ import logging
 import unittest
 
 import transform_content
-import b64
+import b64 
+import urlparse
 ################################################################################
 
 class TransformTest(unittest.TestCase):
@@ -72,7 +73,12 @@ class TransformTest(unittest.TestCase):
       'src="%s" ',
       'style="background:url(%s)'
     ]
-    expected = expected.startswith('#') and expected or  ('/'+b64.uri_b64encode(expected[1:]))
+    
+    No_b64_encoding = expected.lstrip().startswith('#') or  expected.lstrip().lower().startswith('javascript')
+    
+    scheme =  original.startswith('https') and 'https' or urlparse.urlparse(accessed_url).scheme
+    
+    expected = No_b64_encoding and expected or  ('/'+b64.uri_b64encode('%s:/'%scheme +expected))
     for tag in tag_tests:   
       #logging.error("\n\n\n tag begin:%s "%tag)     
       test = tag % original
@@ -210,6 +216,11 @@ class TransformTest(unittest.TestCase):
       "https://slashdot.org",
       "#T_2_5_0_204",
       "#T_2_5_0_204")
+    self._RunTransformTest(
+      "slashdot.org",
+      "https://slashdot.org",
+      "javascript:void(0);",
+      "javascript:void(0);")
 
   def testPartiallySecureContent(self):
     self._RunTransformTest(
@@ -217,6 +228,12 @@ class TransformTest(unittest.TestCase):
       "http://slashdot.org",
       "https://images.slashdot.org/iestyles.css?T_2_5_0_204",
       "/images.slashdot.org/iestyles.css?T_2_5_0_204")
+
+    self._RunTransformTest(
+      "www.taobao.com",
+      "http://www.taobao.com/",
+      "http://ju.atpanel.com/?url=http://www.taobao.com/theme/hotbrands.php?ad_id=&am_id=&cm_id=&pm_id=1500277666bed0e69cf2",
+      "/ju.atpanel.com/?url=http://www.taobao.com/theme/hotbrands.php?ad_id=&am_id=&cm_id=&pm_id=1500277666bed0e69cf2")
 
 ################################################################################
 
