@@ -179,7 +179,7 @@ class MirrorHandler(BaseHandler):
     def post(self, base_url):
         #postdata = self.request.arguments()           
         postdata = dict([(x,self.request.get(x)) for x in self.request.arguments()])
-        logging.error(str(postdata))             
+        #logging.error(str(postdata))             
         self.process_request(base_url,postdata)
         #msg = postdata
         #self.response.out.write(template.render("main.html", {'msg':msg,}))
@@ -199,7 +199,7 @@ class MirrorHandler(BaseHandler):
         # Use sha256 hash instead of mirrored url for the key name, since key
         # names can only be 500 bytes in length; URLs may be up to 2KB.
         key_name = get_url_key_name(mirrored_url)
-        logging.info(u"Handling request for '%s' = '%s'", mirrored_url, key_name)
+        logging.info(u"\n\nHandling request for '%s' = '%s'", mirrored_url, key_name)
 
         content = CookieHelper.useCache(self)  and MirroredContent.get_by_key_name(key_name) or None
         if content is None:

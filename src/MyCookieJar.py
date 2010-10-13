@@ -2,10 +2,10 @@ from cPickle import dumps
 from cookielib import CookieJar
 
 import threading,Cookie
-from  appengine_utilities.sessions import Session
 import hashlib,logging
 from google.appengine.api import memcache
-import uuid,urlparse
+import uuid,urlparse,b64
+from SessionManager import SessionManager
 
 COOKIE_JAR_SESSION_NAME = u'Sess_cj_%s'
 COOKIE_SESSION_NAME = u'Sess_cookie_%s'
@@ -14,16 +14,18 @@ EXPIRATION_DELTA_SECONDS = 60*20
 def get_url_key_name(myurl):
     while myurl.count('.')>1:
         myurl = myurl[myurl.index('.')+1:]
-        
-    url_hash = hashlib.sha256()
-    url_hash.update(myurl)
+     
+    #return b64.uri_b64encode(myurl)   
+    #url_hash = hashlib.sha256()
+    #url_hash.update(myurl)
     
     #logging.error(myurl)
-    return "" + url_hash.hexdigest()
-    #return "xxxxooo"
+    #return "" + url_hash.hexdigest()
+    return "xxxxooo"
 
 def save_session(key,value):
-    session = Session()
+    #session = Session()
+    session = SessionManager().current()   
     if session.has_key(key):
         mem_key = session[key]
         if memcache.get(mem_key):
@@ -32,7 +34,8 @@ def save_session(key,value):
             memcache.add(mem_key, value, time=EXPIRATION_DELTA_SECONDS)
     
 def load_session(key):
-    session = Session()
+    #session = Session()
+    session = SessionManager().current()   
     if session.has_key(key):
         mem_key = session[key]
         return memcache.get(mem_key)
@@ -57,7 +60,7 @@ class MyCookieJar(CookieJar):
         site = urlparse.urlparse(url).netloc.encode('utf-8')
         #site = url
         
-        session = Session()        
+        session = SessionManager().current()       
         cookiejar = None        
         if session.has_key(COOKIE_JAR_SESSION_NAME%get_url_key_name(site)):
             cookiejar = load_session( COOKIE_JAR_SESSION_NAME%get_url_key_name(site))
@@ -90,7 +93,7 @@ class MySimpleCookie(Cookie.SimpleCookie):
         site = urlparse.urlparse(url).netloc.encode('utf-8')
         #site = url
         
-        session = Session()        
+        session = SessionManager().current()     
         cookie = None        
         if session.has_key(COOKIE_SESSION_NAME%get_url_key_name(site)):
             cookie = load_session( COOKIE_SESSION_NAME%get_url_key_name(site))
